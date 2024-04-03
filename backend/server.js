@@ -1,10 +1,13 @@
 const express = require('express');
+const routes = require('./routes/routes');
+
 const app = express();
-const axios = require('axios');
-const router = require("./routes/routes");
+const PORT = process.env.PORT || 3000;
 
-app.get('/', (req,res)=>{
-  res.send("Testing server");
-})
+app.use(express.json());
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.use('/api', routes);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
