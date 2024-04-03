@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import products from "./sampleProducts";
 
-const ProductPage = () => {
+const ProductPage = (props) => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
 

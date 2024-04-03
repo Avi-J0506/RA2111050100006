@@ -12,13 +12,21 @@ const options = [
   , "Speaker", "Headset", "Laptop"
 ];
 
+const companyOptions = [
+  "AMZ", "FLP", "SNP", "MYN", "AZO"
+]
+
 const ProductList = () => {
   const [category, setCategory] = useState(null);
+  const [company, setCompany] = useState(null);
   const [maxprice, setMaxPrice] = useState(0);
   const [minprice, setMinPrice] = useState(0);
   const [searchResults, setSearchResults] = useState([]);
   const handleDropdownChange = (option) => {
     setCategory(option.value);
+  };
+  const handleCompanyDropdownChange = (company) => {
+    setCompany(company.value);
   };
 
   const handleSearch = async () => {
@@ -46,6 +54,14 @@ const ProductList = () => {
           options={options}
           onChange={handleDropdownChange}
           value={category}
+          placeholder="Select an option"
+          className="w-50"
+        />
+        <div className="text-md">Companies:</div>
+        <Dropdown
+          options={companyOptions}
+          onChange={handleCompanyDropdownChange}
+          value={company}
           placeholder="Select an option"
           className="w-50"
         />

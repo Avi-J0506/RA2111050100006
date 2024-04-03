@@ -3,7 +3,6 @@ const axios = require('axios');
 
 const router = express.Router();
 
-const BASE_URL = 'http://20.244.56.144/test/companies';
 
 router.get('/categories/:categoryname/products', async (req, res) => {
   try {
