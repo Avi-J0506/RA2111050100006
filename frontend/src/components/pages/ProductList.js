@@ -3,41 +3,49 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import { Link } from "react-router-dom";
 import products from './sampleProducts'
-
+import axios from "axios";
 
 const options = [
-  "Category",
-  "E-commerce Company",
-  "Rating",
-  "Price Range",
-  "Availability"
+  "Laptop",
+  "Mouse",
+  "Keyboard",
+  "Headphones",
 ];
 
 const ProductList = () => {
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [category, setCategory] = useState(null);
   const [maxprice, setMaxPrice] = useState(0);
   const [minprice, setMinPrice] = useState(0);
-
+  const [searchResults, setSearchResults] = useState([]);
   const handleDropdownChange = (option) => {
-    setSelectedOption(option.value);
-  };
-  const handleMaxPriceChange = (input) => {
-    setSelectedOption(input.value);
-  };
-  const handleMinPriceChange = (input) => {
-    setSelectedOption(input.value);
+    setCategory(option.value);
   };
 
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/categories/${category}/products`, {
+        params: {
+          top: 10,
+          minPrice:minprice,
+          maxPrice:maxprice,
+        }
+      });
+      console.log(response.data);
+      setSearchResults(response.data);
+    } catch (error) {
+      console.error('Error searching products:', error);
+    }
+  };
   return (
     <div className="bg-gray-100 p-4 h-full flex flex-col justify-center items-around px-[10vw] py-[5vw]">
       <div className="md:flex md:justify-between md:items-center" >
       <div className="md:text-3xl text-2xl text-left text-gray-800 font-bold mb-8">Product Results</div>
       <div className="flex justify-end items-center gap-2 mb-8">
-        <div className="text-md">Sort By</div>
+        <div className="text-md">Category</div>
         <Dropdown
           options={options}
           onChange={handleDropdownChange}
-          value={selectedOption}
+          value={category}
           placeholder="Select an option"
           className="w-50"
         />
@@ -50,10 +58,13 @@ const ProductList = () => {
         <div className="text-md">Min Price</div>
         <input type="number"className="w-20" onChange={(e)=>setMinPrice(e.target.value)} value={minprice}/>
       </div>
+      <div className="flex justify-end items-center gap-2 mb-8">
+        <button className="bg-green-600 w-20 h-10" onClick={handleSearch}>Search</button>
+      </div>
       </div>
        
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map((product) => (
+        {searchResults.map((product) => (
           <Link key={product.id} to={`/product/${product.id}`}>
           <div key={product.id} className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
             <img src={product.image} alt={product.productName} className="w-full mb-4" />

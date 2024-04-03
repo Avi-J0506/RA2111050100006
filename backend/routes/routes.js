@@ -9,47 +9,37 @@ router.get('/categories/:categoryname/products', async (req, res) => {
   try {
     const { categoryname } = req.params;
     const { top, minPrice, maxPrice, page, sort } = req.query;
-
     const companyNames = ['FLP', 'SUP', 'MYN', 'AZO'];
-
     
-    
-    // Array to hold promises for each API call
-    const apiPromises = companyNames.map(async () => {
+    const apiPromises = companyNames.map(async (companyName) => {
+      try {
+        // Get access token
+        const authResponse = await axios.post('http://20.244.56.144/test/auth', {
+          companyName: "goMart",
+          clientID: "02367c89-3455-4653-bfd2-9e7182d31bfa",
+          clientSecret: "QQwOvcLEmSkrAQSt",
+          ownerName: "abhinandan",
+          ownerEmail: "ag0346@srmist.edu.in",
+          rollNo: "RA2111051010006"
+        });
 
+        // Fetch products
+        const response = await axios.get(`http://20.244.56.144/test/companies/${companyName}/categories/${categoryname}/products`, {
+          params: {
+            top,
+            minPrice,
+            maxPrice
+          },
+          headers: {
+            'Authorization': `Bearer ${authResponse.data.access_token}`
+          }
+        });
 
-      let data = JSON.stringify({        
-          "companyName": "goMart",
-          "clientID": "02367c89-3455-4653-bfd2-9e7182d31bfa",
-          "clientSecret": "QQwOvcLEmSkrAQSt",
-          "ownerName": "abhinandan",
-          "ownerEmail": "ag0346@srmist.edu.in",
-          "rollNo": "RA2111051010006"    
-      });
-      const headers = {
-        'Content-Type': 'application/json'
-      };
-      const response = await axios.post('http://20.244.56.144/test/auth', data, headers); 
-
-
-      let config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: `http://20.244.56.144/test/companies/AMZ/categories/Laptop/products?top=${top}&minPrice=${minPrice}&maxPrice=${maxPrice}`,
-        headers: { 
-          'Authorization': `Bearer ${response.data.access_token}`
-        }
-      };
-      
-      axios.request(config)
-      .then((response) => {
-        console.log(response.data);
-       
         return response.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      } catch (error) {
+        console.error(`Error fetching products from ${companyName}:`, error);
+        return [];
+      }
     });
 
     // Wait for all promises to resolve
@@ -70,7 +60,7 @@ router.get('/categories/:categoryname/products', async (req, res) => {
     const startIdx = (Number(page) - 1) * pageSize || 0;
     const paginatedResults = combinedResults.slice(startIdx, startIdx + pageSize);
 
-    res.json(paginatedResults);
+    res.status(200).json(paginatedResults);
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ error: 'Internal Server Error' });
