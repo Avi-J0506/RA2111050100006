@@ -71,19 +71,43 @@ router.get('/categories/:categoryname/products', async (req, res) => {
 router.get('/categories/:categoryname/products/:productid', async (req, res) => {
   try {
     const { categoryname, productid } = req.params;
-    const companyNames = ['FLP', 'SUP', 'MYN', 'AZO']; // Your company names
+    const companyNames = ['FLP', 'SUP', 'MYN', 'AZO'];
 
-    // Array to hold promises for each API call
     const apiPromises = companyNames.map(async (companyName) => {
-      const url = `${BASE_URL}/${companyName}/categories/${categoryname}/products/${productid}`;
-      const response = await axios.get(url);
-      return response.data;
+      try {
+        // Get access token
+        const authResponse = await axios.post('http://20.244.56.144/test/auth', {
+          companyName: "goMart",
+          clientID: "02367c89-3455-4653-bfd2-9e7182d31bfa",
+          clientSecret: "QQwOvcLEmSkrAQSt",
+          ownerName: "abhinandan",
+          ownerEmail: "ag0346@srmist.edu.in",
+          rollNo: "RA2111051010006"
+        });
+
+        // Fetch product details
+        const response = await axios.get(`http://20.244.56.144/test/companies/${companyName}/categories/${categoryname}/products/${productid}`, {
+          params: {
+            top,
+            minPrice,
+            maxPrice
+          },
+          headers: {
+            'Authorization': `Bearer ${authResponse.data.access_token}`
+          }
+        });
+
+        return response.data;
+      } catch (error) {
+        console.error(`Error fetching product details from ${companyName}:`, error);
+        return null;
+      }
     });
 
     const results = await Promise.all(apiPromises);
 
     // Find the product in the combined results
-    const product = results.find((result) => result.id === productid);
+    const product = results.find((result) => result !== null);
 
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });

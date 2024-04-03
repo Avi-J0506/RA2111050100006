@@ -6,10 +6,10 @@ import products from './sampleProducts'
 import axios from "axios";
 
 const options = [
-  "Laptop",
-  "Mouse",
-  "Keyboard",
-  "Headphones",
+   "Phone", "Computer", "TV", "Earphone", "Tablet", "Charger", "Mouse",
+  "Keypad", "Bluetooth",
+  "Pendrive", "Remote"
+  , "Speaker", "Headset", "Laptop"
 ];
 
 const ProductList = () => {
