@@ -22,13 +22,6 @@ const ProductPage = () => {
 
   return (
     <div className="bg-gray-100 p-4 h-screen flex flex-col justify-center items-center sm:flex-row sm:justify-around sm:items-center px-10">
-    <div className="bg-white w-full sm:w-1/3 p-4 flex justify-center items-center sm:items-start sm:justify-start">
-      <img
-        src={product.image}
-        alt={product.productName}
-        className="w-full mb-4"
-      />
-    </div>
     <div className="w-full sm:w-1/3 flex flex-col justify-start items-start">
       <h1 className="md:text-3xl text-xl text-gray-800 font-bold mb-8">
         {product.productName}

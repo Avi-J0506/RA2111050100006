@@ -23,7 +23,7 @@ const ProductList = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/categories/${category}/products`, {
+      const response = await axios.get(`http://localhost:5000/api/categories/${category}/products`, {
         params: {
           top: 10,
           minPrice:minprice,
@@ -67,7 +67,6 @@ const ProductList = () => {
         {searchResults.map((product) => (
           <Link key={product.id} to={`/product/${product.id}`}>
           <div key={product.id} className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
-            <img src={product.image} alt={product.productName} className="w-full mb-4" />
             <div className="text-gray-800 space-y-2">
               <h3 className="text-lg font-semibold mb-2">{product.productName}</h3>
               <p className="text-sm text-gray-600">Rating: {product.rating}</p>
